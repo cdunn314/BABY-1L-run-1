@@ -2,6 +2,12 @@
 
 This is a template repository for experimental runs of LIBRA.
 
+Create a conda environment
+
+```
+conda env create -f environment.yml
+```
+
 ## Todo list:
 - [ ] [Link to Zenodo](https://zenodo.org/)
 - [ ] Add Zenodo badge with DOI
