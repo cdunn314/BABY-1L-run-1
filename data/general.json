@@ -1,0 +1,126 @@
+{
+    "general_data": {
+        "description": "Pure 1 L ClLiF, test run",
+        "salt": "ClLiF",
+        "salt_mass": null,
+        "temperature_salt": {
+            "value": 627,
+            "unit": "degC",
+            "note": "minimum, temperature is non-uniform"
+        },
+        "purpose_of_run": "First irradiation of 1 L setup, systems test and evaluation of tritium production levels. Assessment of permeation fraction. Bubbling with dead water."
+    },
+    "cover_gas": {
+        "type": "He",
+        "pressure_gas_system": {
+            "value": 10,
+            "unit": "PSIG"
+        },
+        "pressure_gas_crucible": {
+            "value": 3,
+            "unit": "PSIG",
+            "note": "in steady state, downstream from filters"
+        },
+        "flow_rate_cover": {
+            "value": 30,
+            "unit": "SCCM"
+        },
+        "flow_rate_air": {
+            "value": 10,
+            "unit": "SCCM"
+        },
+        "switched_to": "on"
+    },
+    "secondary_gas": {
+        "type": "He",
+        "pressure_gas_system": {
+            "value": 10,
+            "unit": "PSIG"
+        },
+        "pressure_gas_crucible": {
+            "value": 3,
+            "unit": "PSIG",
+            "note": "in steady state, downstream from filters"
+        },
+        "flow_rate_cover": {
+            "value": 50,
+            "unit": "SCCM"
+        },
+        "flow_rate_air": {
+            "value": 10,
+            "unit": "SCCM"
+        },
+        "switched_to": "on"
+    },
+    "generators": [
+        {
+            "name": "A-325",
+            "enabled": true,
+            "acceleration_voltage": {
+                "value": -100,
+                "unit": "kV"
+            },
+            "source_voltage": {
+                "value": 3,
+                "unit": "kV"
+            }
+        },
+        {
+            "name": "P-383",
+            "enabled": false,
+            "beam_current": "N/A",
+            "beam_voltage": "N/A"
+        }
+    ],
+    "notes": "A-325 positioned under the fume hood work surface, cooled with combined blower airflow from the side and small fan from the front. Gap between bottom surface of epoxy and the generator about 1/2\". Briefly interrupted to reset PRT.",
+    "neutron_detection": {
+        "foils": {
+            "enabled": true,
+            "position": "on generators, at target plane, facing top and bottom",
+            "materials": [
+                {
+                    "position": "A 325 - top",
+                    "material": "Zr",
+                    "mass": {
+                        "value": null,
+                        "unit": "g"
+                    }
+                },
+                {
+                    "position": "A 325 - bottom",
+                    "material": "Nb",
+                    "mass": {
+                        "value": null,
+                        "unit": "g"
+                    }
+                }
+            ]
+        },
+        "diamond": {
+            "enabled": false,
+            "note": "preamp fail"
+        },
+        "proton_recoil_telecsope": {
+            "enabled": true,
+            "note": "brief interruption"
+        }
+    },
+    "timestamps": {
+        "heater": {
+            "on": "2024-11-02T15:45:00",
+            "off": null
+        },
+        "generators": [
+            {
+                "name": "A-325",
+                "on": "11/4/2024 10:07",
+                "off": "11/4/2024 20:00"
+            },
+            {
+                "name": "A-325",
+                "on": "11/4/24 20:07",
+                "off": "11/4/24 22:14"
+            }
+        ]
+    }
+}
