@@ -1,5 +1,6 @@
 from libra_toolbox.tritium.model import ureg, Model
 import numpy as np
+import json
 from libra_toolbox.tritium.lsc_measurements import (
     LSCFileReader,
     LIBRASample,
@@ -7,6 +8,8 @@ from libra_toolbox.tritium.lsc_measurements import (
     LSCSample,
     GasStream,
 )
+from datetime import datetime
+
 
 data_folder = "../../data/tritium_detection"
 
@@ -309,7 +312,16 @@ background_file_8 = LSCSample.from_file(file_reader_8, "1L-BL-1")
 
 # Make streams
 
-start_time = "11/4/2024 10:07 AM"
+# read start time from general.json
+with open("../../data/general.json", "r") as f:
+    general_data = json.load(f)
+
+all_start_times = []
+for generator in general_data["timestamps"]["generators"]:
+    start_time = datetime.strptime(generator["on"], "%m/%d/%Y %H:%M")
+    all_start_times.append(start_time)
+start_time_as_datetime = min(all_start_times)
+start_time = start_time_as_datetime.strftime("%m/%d/%Y %H:%M %p")
 
 IV_stream = GasStream(
     [
@@ -391,11 +403,22 @@ optimised_ratio = 1.7e-2
 k_top = 8.9e-8 * ureg.m * ureg.s**-1
 k_wall = optimised_ratio * k_top
 
-exposure_time = 12 * ureg.hour
+# read irradiation times from general.json
+with open("../../data/general.json", "r") as f:
+    general_data = json.load(f)
 
-irradiations = [
-    [0 * ureg.hour, 0 + exposure_time],
-]
+irradiations = []
+for generator in general_data["timestamps"]["generators"]:
+    irr_start_time = (
+        datetime.strptime(generator["on"], "%m/%d/%Y %H:%M") - start_time_as_datetime
+    )
+    irr_stop_time = (
+        datetime.strptime(generator["off"], "%m/%d/%Y %H:%M") - start_time_as_datetime
+    )
+    irr_start_time = irr_start_time.total_seconds() * ureg.second
+    irr_stop_time = irr_stop_time.total_seconds() * ureg.second
+    irradiations.append([irr_start_time, irr_stop_time])
+
 
 # calculated from Kevin's activation foil analysis from run 100 mL #7
 # TODO replace for values for this run
