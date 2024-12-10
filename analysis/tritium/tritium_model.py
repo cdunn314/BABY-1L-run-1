@@ -196,6 +196,7 @@ file_reader_8 = LSCFileReader(
 )
 file_reader_8.read_file()
 
+# NOTE: 12/10/2024 This count is still ongoing, the OV 1-6 samples are not yet counted, but for all practical purposes we can assume they're zeros. Other than that it all looks good to me.
 file_reader_9 = LSCFileReader(
     f"{data_folder}/1L_BL-1_IV-1-8_OV-1-5_IV-1-9_OV-1-6.csv",
     vial_labels=[
