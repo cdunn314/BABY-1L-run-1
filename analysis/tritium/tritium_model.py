@@ -217,6 +217,10 @@ file_reader_9 = LSCFileReader(
         "IV 1-9-3",
         "IV 1-9-4",
         None,
+        "OV 1-6-1",
+        "OV 1-6-2",
+        "OV 1-6-3",
+        "OV 1-6-4",
     ],
 )
 file_reader_9.read_file()
@@ -345,6 +349,31 @@ sample_4_OV = LIBRASample(
 
 background_file_8 = LSCSample.from_file(file_reader_8, "1L-BL-1")
 
+
+sample_9_IV = LIBRASample(
+    samples=[
+        LSCSample.from_file(file_reader_9, label)
+        for label in ["IV 1-9-1", "IV 1-9-2", "IV 1-9-3", "IV 1-9-4"]
+    ],
+    time="12/9/2024 12:13 PM",
+)
+
+sample_5_OV = LIBRASample(
+    samples=[
+        LSCSample.from_file(file_reader_9, label)
+        for label in ["OV 1-5-1", "OV 1-5-2", "OV 1-5-3", "OV 1-5-4"]
+    ],
+    time="12/6/2024 2:22 PM",
+)
+
+sample_6_OV = LIBRASample(
+    samples=[
+        LSCSample.from_file(file_reader_9, label)
+        for label in ["OV 1-6-1", "OV 1-6-2", "OV 1-6-3", "OV 1-6-4"]
+    ],
+    time="12/9/2024 12:13 PM",
+)
+
 # Make streams
 
 # read start time from general.json
@@ -368,11 +397,13 @@ IV_stream = GasStream(
         sample_6_IV,
         sample_7_IV,
         sample_8_IV,
+        sample_9_IV,
     ],
     start_time=start_time,
 )
 OV_stream = GasStream(
-    [sample_1_OV, sample_2_OV, sample_3_OV, sample_4_OV], start_time=start_time
+    [sample_1_OV, sample_2_OV, sample_3_OV, sample_4_OV, sample_5_OV, sample_6_OV],
+    start_time=start_time,
 )
 
 # substract background
@@ -387,10 +418,13 @@ sample_5_IV.substract_background(background_sample=sample_5_IV_background)
 sample_6_IV.substract_background(background_sample=background_file_7)
 sample_7_IV.substract_background(background_sample=background_file_8)
 sample_8_IV.substract_background(background_sample=background_file_9)
+sample_9_IV.substract_background(background_sample=background_file_9)
 sample_1_OV.substract_background(background_sample=blank_sample_1_OV)
 sample_2_OV.substract_background(background_sample=sample_2_OV_background)
 sample_3_OV.substract_background(background_sample=background_file_7)
 sample_4_OV.substract_background(background_sample=background_file_8)
+sample_5_OV.substract_background(background_sample=background_file_9)
+sample_6_OV.substract_background(background_sample=background_file_9)
 
 # create run
 run = LIBRARun(streams=[IV_stream, OV_stream], start_time=start_time)
