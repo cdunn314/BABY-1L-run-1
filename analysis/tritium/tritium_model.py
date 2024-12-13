@@ -142,26 +142,8 @@ file_reader_5 = LSCFileReader(
 file_reader_5.read_file()
 
 
-file_reader_6 = LSCFileReader(
-    f"{data_folder}/1L_BL-1_IV-1-6_OV-1-3.csv",
-    vial_labels=[
-        "1L-BL-1",
-        None,
-        "IV 1-6-1",
-        "IV 1-6-2",
-        "IV 1-6-3",
-        "IV 1-6-4",
-        None,
-        "OV 1-3-1",
-        "OV 1-3-2",
-        "OV 1-3-3",
-        "OV 1-3-4",
-    ],
-)
-file_reader_6.read_file()
-
 file_reader_7 = LSCFileReader(
-    f"{data_folder}/1L_BL-1_IV-1-6_OV-1-3_recount.csv",
+    f"{data_folder}/1L_BL-1_IV-1-6_OV-1-3.csv",
     vial_labels=[
         "1L-BL-1",
         None,
