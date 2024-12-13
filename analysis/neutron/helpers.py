@@ -33,7 +33,14 @@ def calculate_cylinder_volume(radius, height):
     return volume
 
 
-def translate_surface(surface: openmc.Surface, dx, dy, dz):
+def translate_surface(
+    surface: (
+        openmc.XPlane | openmc.YPlane | openmc.ZPlane | openmc.Plane | openmc.Sphere
+    ),
+    dx: float,
+    dy: float,
+    dz: float,
+):
     """Translate an OpenMC surface by dx, dy, dz."""
     if isinstance(surface, openmc.XPlane):
         surface.x0 += dx
