@@ -3,7 +3,7 @@ channels:
   - conda-forge
 dependencies:
   - python
-  - openmc~=0.14.0
+  - openmc~=0.15.0
   - openmc-plotter
   - numpy # add version tag
   - scipy # add version tag
