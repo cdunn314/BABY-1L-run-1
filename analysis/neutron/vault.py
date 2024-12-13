@@ -1,4 +1,5 @@
 import openmc
+import openmc.model
 import numpy as np
 from helpers import translate_surface
 
@@ -12,7 +13,7 @@ def build_vault_model(
     added_cells=[],
     added_materials=[],
     overall_exclusion_region=None,
-):
+) -> openmc.model.Model:
     #
     # **** Natural elements ****
     #

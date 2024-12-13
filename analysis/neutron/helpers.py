@@ -40,7 +40,7 @@ def translate_surface(
     dx: float,
     dy: float,
     dz: float,
-):
+) -> openmc.Surface:
     """Translate an OpenMC surface by dx, dy, dz."""
     if isinstance(surface, openmc.XPlane):
         surface.x0 += dx
