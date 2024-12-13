@@ -24,7 +24,7 @@ jobs:
 
       - name: Run neutronics model
         shell: bash -l {0}
-        working-directory: analysis/neutronics
+        working-directory: analysis/neutron
         run: |
           python openmc_model.py
           jupyter-nbconvert --to notebook postprocessing.ipynb --execute
