@@ -2,6 +2,9 @@ import openmc
 import numpy as np
 from helpers import translate_surface
 
+# needed to download cross sections on the fly
+import openmc_data_downloader as odd
+
 
 def build_vault_model(
     settings=openmc.Settings(),
@@ -342,9 +345,13 @@ def build_vault_model(
     )
 
     # Add materials from imported model
-    for mat in added_materials:
-        materials.append(mat)
+    materials += added_materials
 
+    materials.download_cross_section_data(
+        libraries=["ENDFB-8.0-NNDC"],
+        set_OPENMC_CROSS_SECTIONS=True,
+        particles=["neutron"],
+    )
     #
     # Definition of the spherical void/blackhole boundary
     Surface_95 = openmc.Sphere(x0=0.0, y0=0.0, z0=0.0, r=2500.0, boundary_type="vacuum")
