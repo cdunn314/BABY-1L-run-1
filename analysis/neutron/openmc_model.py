@@ -4,8 +4,16 @@ import helpers
 
 
 def baby_geometry(x_c: float, y_c: float, z_c: float):
-    ############################################################################
-    # Define Geometry
+    """Returns the geometry for the BABY experiment.
+
+    Args:
+        x_c: x-coordinate of the center of the BABY experiment (cm)
+        y_c: y-coordinate of the center of the BABY experiment (cm)
+        z_c: z-coordinate of the center of the BABY experiment (cm)
+
+    Returns:
+        the sphere, cllif cell, and cells
+    """
 
     epoxy_thickness = 2.54  # 1 inch
     alumina_compressed_thickness = 2.54  # 1 inch
@@ -241,6 +249,11 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
 
 
 def baby_model():
+    """Returns an openmc model of the BABY experiment.
+
+    Returns:
+        the openmc model
+    """
 
     materials = [
         inconel625,
@@ -255,17 +268,19 @@ def baby_model():
     ]
 
     # BABY coordinates
-    x_c = 587
-    y_c = 60
-    z_c = 100
+    x_c = 587  # cm
+    y_c = 60  # cm
+    z_c = 100  # cm
     sphere, cllif_cell, cells = baby_geometry(x_c, y_c, z_c)
+
     ############################################################################
     # Define Settings
+
+    settings = openmc.Settings()
+
     point = openmc.stats.Point((x_c, y_c, z_c - 5.635))
     src = openmc.IndependentSource(space=point)
     src.energy = openmc.stats.Discrete([14.1e6], [1.0])
-
-    settings = openmc.Settings()
     settings.source = src
     settings.batches = 100
     settings.inactive = 0
