@@ -468,7 +468,26 @@ baby_cross_section = np.pi * baby_radius**2
 baby_height = baby_volume / baby_cross_section
 
 # from OpenMC
-calculated_TBR = 1.9e-3 * ureg.particle * ureg.neutron**-1
+
+# read from file
+
+from pathlib import Path
+
+filename = "../neutron/statepoint.100.h5"
+filename = Path(filename)
+
+if not filename.exists():
+    raise FileNotFoundError(f"{filename} does not exist, run OpenMC first")
+
+import openmc
+
+sp = openmc.StatePoint(filename)
+tally_df = sp.get_tally(name="TBR").get_pandas_dataframe()
+calculated_TBR = tally_df["mean"].iloc[0] * ureg.particle * ureg.neutron**-1
+calculated_TBR_std_dev = (
+    tally_df["std. dev."].iloc[0] * ureg.particle * ureg.neutron**-1
+)
+# calculated_TBR = 1.9e-3 * ureg.particle * ureg.neutron**-1
 
 optimised_ratio = 1.7e-2
 k_top = 8.9e-8 * ureg.m * ureg.s**-1
