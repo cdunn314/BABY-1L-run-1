@@ -27,10 +27,11 @@ def baby_model():
     inconel625.set_density("g/cm3", 8.44)
 
     # lif-licl - natural - pure
+    licl_frac = 0.695
     cllif_nat = openmc.Material(name="ClLiF natural")
-    cllif_nat.add_element("F", 0.5 * 0.305, "ao")
-    cllif_nat.add_element("Li", 0.5 * 0.305 + 0.5 * 0.695, "ao")
-    cllif_nat.add_element("Cl", 0.5 * 0.695, "ao")
+    cllif_nat.add_element("F", 0.5 * (1 - licl_frac), "ao")
+    cllif_nat.add_element("Li", 0.5 * (1 - licl_frac) + 0.5 * licl_frac, "ao")
+    cllif_nat.add_element("Cl", 0.5 * licl_frac, "ao")
     cllif_nat.set_density(
         "g/cm3", helpers.get_exp_cllif_density(650)
     )  # 69.5 at. % LiCL at 650 C
