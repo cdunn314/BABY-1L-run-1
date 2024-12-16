@@ -420,25 +420,8 @@ for stream in run.streams:
             ), f"Background not substracted for {sample}"
 
 
-replacement_times_top = [
-    sample.get_relative_time(start_time) for sample in IV_stream.samples
-]
-replacement_times_walls = [
-    sample.get_relative_time(start_time) for sample in OV_stream.samples
-]
-
-# convert timedelta to pint quantity  # TODO add this to libra-toolbox
-
-replacement_times_top = [
-    time.total_seconds() * ureg.second for time in replacement_times_top
-]
-replacement_times_walls = [
-    time.total_seconds() * ureg.second for time in replacement_times_walls
-]
-
-replacement_times_top = sorted(replacement_times_top)
-
-replacement_times_walls = sorted(replacement_times_walls)
+replacement_times_top = sorted(IV_stream.relative_times_as_pint)
+replacement_times_walls = sorted(OV_stream.relative_times_as_pint)
 
 
 # tritium model
