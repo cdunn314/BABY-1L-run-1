@@ -1,4 +1,4 @@
-from libra_toolbox.tritium.model import ureg, Model
+from libra_toolbox.tritium.model import ureg, Model, quantity_to_activity
 import numpy as np
 import json
 from libra_toolbox.tritium.lsc_measurements import (
@@ -142,26 +142,8 @@ file_reader_5 = LSCFileReader(
 file_reader_5.read_file()
 
 
-file_reader_6 = LSCFileReader(
-    f"{data_folder}/1L_BL-1_IV-1-6_OV-1-3.csv",
-    vial_labels=[
-        "1L-BL-1",
-        None,
-        "IV 1-6-1",
-        "IV 1-6-2",
-        "IV 1-6-3",
-        "IV 1-6-4",
-        None,
-        "OV 1-3-1",
-        "OV 1-3-2",
-        "OV 1-3-3",
-        "OV 1-3-4",
-    ],
-)
-file_reader_6.read_file()
-
 file_reader_7 = LSCFileReader(
-    f"{data_folder}/1L_BL-1_IV-1-6_OV-1-3_recount.csv",
+    f"{data_folder}/1L_BL-1_IV-1-6_OV-1-3.csv",
     vial_labels=[
         "1L-BL-1",
         None,
@@ -227,13 +209,25 @@ file_reader_9.read_file()
 
 
 # Make samples
+with open("../../data/general.json", "r") as f:
+    general_data = json.load(f)
 
+
+time_sample_0_IV = datetime.strptime(
+    general_data["timestamps"]["lsc_sample_times"]["IV"]["1-0-x"]["actual"],
+    "%m/%d/%Y %H:%M",
+)
 sample_0_IV = LIBRASample(
     samples=[
         LSCSample.from_file(file_reader_1, label)
         for label in ["IV-1-0-1", "IV-1-0-2", "IV-1-0-3", "IV-1-0-4"]
     ],
-    time="before run",
+    time=time_sample_0_IV,
+)
+
+time_sample_1_IV = datetime.strptime(
+    general_data["timestamps"]["lsc_sample_times"]["IV"]["1-1-x"]["actual"],
+    "%m/%d/%Y %H:%M",
 )
 
 sample_1_IV = LIBRASample(
@@ -241,17 +235,25 @@ sample_1_IV = LIBRASample(
         LSCSample.from_file(file_reader_1, label)
         for label in ["IV-1-1-1", "IV-1-1-2", "IV-1-1-3", "IV-1-1-4"]
     ],
-    time="11/5/2024 12:32 PM",
+    time=time_sample_1_IV,
 )
 
+time_sample_2_IV = datetime.strptime(
+    general_data["timestamps"]["lsc_sample_times"]["IV"]["1-2-x"]["actual"],
+    "%m/%d/%Y %H:%M",
+)
 sample_2_IV = LIBRASample(
     samples=[
         LSCSample.from_file(file_reader_2, label)
         for label in ["IV-1-2-1", "IV-1-2-2", "IV-1-2-3", "IV-1-2-4"]
     ],
-    time="11/7/2024 8:49 AM",
+    time=time_sample_2_IV,
 )
 
+time_sample_3_IV = datetime.strptime(
+    general_data["timestamps"]["lsc_sample_times"]["IV"]["1-3-x"]["actual"],
+    "%m/%d/%Y %H:%M",
+)
 sample_3_IV = LIBRASample(
     samples=[
         LSCSample.from_file(file_reader_3, "IV-1-3-1"),
@@ -261,124 +263,167 @@ sample_3_IV = LIBRASample(
         LSCSample.from_file(file_reader_3, "IV-1-3-3"),
         LSCSample.from_file(file_reader_3, "IV-1-3-4"),
     ],
-    time="11/10/2024 1:33 PM",
+    time=time_sample_3_IV,
 )
 blank_sample_3_IV = LSCSample.from_file(file_reader_3, "IV-BL-1")
 
-
+time_sample_4_IV = datetime.strptime(
+    general_data["timestamps"]["lsc_sample_times"]["IV"]["1-4-x"]["actual"],
+    "%m/%d/%Y %H:%M",
+)
 sample_4_IV = LIBRASample(
     samples=[
         LSCSample.from_file(file_reader_4, label)
         for label in ["IV-1-4-1", "IV-1-4-2", "IV-1-4-3", "IV-1-4-4"]
     ],
-    time="11/13/2024 2:31 PM",
+    time=time_sample_4_IV,
 )
 blank_sample_4 = LSCSample.from_file(file_reader_4, "BL-1_count_4")
 
+time_sample_1_OV = datetime.strptime(
+    general_data["timestamps"]["lsc_sample_times"]["OV"]["1-1-x"]["actual"],
+    "%m/%d/%Y %H:%M",
+)
 sample_1_OV = LIBRASample(
     samples=[
         LSCSample.from_file(file_reader_OV_1_recount, label)
         for label in ["OV-1-1-1_avg", "OV-1-1-2_avg", "OV-1-1-3_avg", "OV-1-1-4_avg"]
     ],
-    time="11/13/2024 2:31 PM",
+    time=time_sample_1_OV,
 )
 blank_sample_1_OV = LSCSample.from_file(file_reader_OV_1_recount, "BL-1_avg")
 
-
+time_sample_5_IV = datetime.strptime(
+    general_data["timestamps"]["lsc_sample_times"]["IV"]["1-5-x"]["actual"],
+    "%m/%d/%Y %H:%M",
+)
 sample_5_IV = LIBRASample(
     samples=[
         LSCSample.from_file(file_reader_5, label)
         for label in ["IV-1-5-1", "IV-1-5-2", "IV-1-5-3", "IV-1-5-4"]
     ],
-    time="11/18/2024 1:40 PM",
+    time=time_sample_5_IV,
 )
 sample_5_IV_background = LSCSample.from_file(file_reader_5, "1L-BL-1")
 sample_2_OV_background = sample_5_IV_background
 
+time_sample_2_OV = datetime.strptime(
+    general_data["timestamps"]["lsc_sample_times"]["OV"]["1-2-x"]["actual"],
+    "%m/%d/%Y %H:%M",
+)
 sample_2_OV = LIBRASample(
     samples=[
         LSCSample.from_file(file_reader_5, label)
         for label in ["OV-1-2-1", "OV-1-2-2", "OV-1-2-3", "OV-1-2-4"]
     ],
-    time="11/18/2024 1:40 PM",
+    time=time_sample_2_OV,
 )
 
+time_sample_6_IV = datetime.strptime(
+    general_data["timestamps"]["lsc_sample_times"]["IV"]["1-6-x"]["actual"],
+    "%m/%d/%Y %H:%M",
+)
 sample_6_IV = LIBRASample(
     samples=[
         LSCSample.from_file(file_reader_7, label)
         for label in ["IV 1-6-1", "IV 1-6-2", "IV 1-6-3", "IV 1-6-4"]
     ],
-    time="11/23/2024 4:19 PM",
+    time=time_sample_6_IV,
 )
 
+time_sample_3_OV = datetime.strptime(
+    general_data["timestamps"]["lsc_sample_times"]["OV"]["1-3-x"]["actual"],
+    "%m/%d/%Y %H:%M",
+)
 sample_3_OV = LIBRASample(
     samples=[
         LSCSample.from_file(file_reader_7, label)
         for label in ["OV 1-3-1", "OV 1-3-2", "OV 1-3-3", "OV 1-3-4"]
     ],
-    time="11/23/2024 4:19 PM",
+    time=time_sample_3_OV,
 )
 
 background_file_7 = LSCSample.from_file(file_reader_7, "1L-BL-1")
 
+time_sample_7_IV = datetime.strptime(
+    general_data["timestamps"]["lsc_sample_times"]["IV"]["1-7-x"]["actual"],
+    "%m/%d/%Y %H:%M",
+)
 sample_7_IV = LIBRASample(
     samples=[
         LSCSample.from_file(file_reader_8, label)
         for label in ["IV 1-7-1", "IV 1-7-2", "IV 1-7-3", "IV 1-7-4"]
     ],
-    time="11/29/2024 11:43 AM",
+    time=time_sample_7_IV,
 )
 
+time_sample_8_IV = datetime.strptime(
+    general_data["timestamps"]["lsc_sample_times"]["IV"]["1-8-x"]["actual"],
+    "%m/%d/%Y %H:%M",
+)
 sample_8_IV = LIBRASample(
     samples=[
         LSCSample.from_file(file_reader_9, label)
         for label in ["IV 1-8-1", "IV 1-8-2", "IV 1-8-3", "IV 1-8-4"]
     ],
-    time="12/6/2024 2:22 PM",
+    time=time_sample_8_IV,
 )
 
 background_file_9 = LSCSample.from_file(file_reader_9, "1L-BL-1")
 
+time_sample_4_OV = datetime.strptime(
+    general_data["timestamps"]["lsc_sample_times"]["OV"]["1-4-x"]["actual"],
+    "%m/%d/%Y %H:%M",
+)
 sample_4_OV = LIBRASample(
     samples=[
         LSCSample.from_file(file_reader_8, label)
         for label in ["OV 1-4-1", "OV 1-4-2", "OV 1-4-3", "OV 1-4-4"]
     ],
-    time="11/29/2024 11:43 AM",
+    time=time_sample_4_OV,
 )
 
 background_file_8 = LSCSample.from_file(file_reader_8, "1L-BL-1")
 
-
+time_sample_9_IV = datetime.strptime(
+    general_data["timestamps"]["lsc_sample_times"]["IV"]["1-9-x"]["actual"],
+    "%m/%d/%Y %H:%M",
+)
 sample_9_IV = LIBRASample(
     samples=[
         LSCSample.from_file(file_reader_9, label)
         for label in ["IV 1-9-1", "IV 1-9-2", "IV 1-9-3", "IV 1-9-4"]
     ],
-    time="12/9/2024 12:13 PM",
+    time=time_sample_9_IV,
 )
 
+time_sample_5_OV = datetime.strptime(
+    general_data["timestamps"]["lsc_sample_times"]["OV"]["1-5-x"]["actual"],
+    "%m/%d/%Y %H:%M",
+)
 sample_5_OV = LIBRASample(
     samples=[
         LSCSample.from_file(file_reader_9, label)
         for label in ["OV 1-5-1", "OV 1-5-2", "OV 1-5-3", "OV 1-5-4"]
     ],
-    time="12/6/2024 2:22 PM",
+    time=time_sample_5_OV,
 )
 
+time_sample_6_OV = datetime.strptime(
+    general_data["timestamps"]["lsc_sample_times"]["OV"]["1-6-x"]["actual"],
+    "%m/%d/%Y %H:%M",
+)
 sample_6_OV = LIBRASample(
     samples=[
         LSCSample.from_file(file_reader_9, label)
         for label in ["OV 1-6-1", "OV 1-6-2", "OV 1-6-3", "OV 1-6-4"]
     ],
-    time="12/9/2024 12:13 PM",
+    time=time_sample_6_OV,
 )
 
 # Make streams
 
 # read start time from general.json
-with open("../../data/general.json", "r") as f:
-    general_data = json.load(f)
 
 all_start_times = []
 for generator in general_data["timestamps"]["generators"]:
@@ -438,28 +483,11 @@ for stream in run.streams:
             ), f"Background not substracted for {sample}"
 
 
-replacement_times_top = [
-    sample.get_relative_time(start_time) for sample in IV_stream.samples
-]
-replacement_times_walls = [
-    sample.get_relative_time(start_time) for sample in OV_stream.samples
-]
-
-# convert timedelta to pint quantity  # TODO add this to libra-toolbox
-
-replacement_times_top = [
-    time.total_seconds() * ureg.second for time in replacement_times_top
-]
-replacement_times_walls = [
-    time.total_seconds() * ureg.second for time in replacement_times_walls
-]
-
-replacement_times_top = sorted(replacement_times_top)
-
-replacement_times_walls = sorted(replacement_times_walls)
+replacement_times_top = sorted(IV_stream.relative_times_as_pint)
+replacement_times_walls = sorted(OV_stream.relative_times_as_pint)
 
 
-# Model
+# tritium model
 
 baby_diameter = 14 * ureg.cm  # TODO confirm with CAD
 baby_radius = 0.5 * baby_diameter
@@ -467,9 +495,32 @@ baby_volume = 1 * ureg.L
 baby_cross_section = np.pi * baby_radius**2
 baby_height = baby_volume / baby_cross_section
 
-# from OpenMC
+# read irradiation times from general.json
 
-# read from file
+irradiations = []
+for generator in general_data["timestamps"]["generators"]:
+    irr_start_time = (
+        datetime.strptime(generator["on"], "%m/%d/%Y %H:%M") - start_time_as_datetime
+    )
+    irr_stop_time = (
+        datetime.strptime(generator["off"], "%m/%d/%Y %H:%M") - start_time_as_datetime
+    )
+    irr_start_time = irr_start_time.total_seconds() * ureg.second
+    irr_stop_time = irr_stop_time.total_seconds() * ureg.second
+    irradiations.append([irr_start_time, irr_stop_time])
+
+# Neutron rate
+# calculated from Kevin's activation foil analysis from run 100 mL #7
+# TODO replace for values for this run
+P383_neutron_rate = 4.95e8 * ureg.neutron * ureg.s**-1
+A325_neutron_rate = 2.13e8 * ureg.neutron * ureg.s**-1
+
+neutron_rate_relative_uncertainty = 0.089
+neutron_rate = (
+    A325_neutron_rate
+) / 2  # the neutron rate is divided by two to acount for the double counting (two detectors)
+
+# TBR from OpenMC
 
 from pathlib import Path
 
@@ -487,43 +538,30 @@ calculated_TBR = tally_df["mean"].iloc[0] * ureg.particle * ureg.neutron**-1
 calculated_TBR_std_dev = (
     tally_df["std. dev."].iloc[0] * ureg.particle * ureg.neutron**-1
 )
-# calculated_TBR = 1.9e-3 * ureg.particle * ureg.neutron**-1
+
+# TBR from measurements
+
+total_irradiation_time = sum([irr[1] - irr[0] for irr in irradiations])
+
+T_consumed = neutron_rate * total_irradiation_time
+T_produced = (
+    IV_stream.get_cumulative_activity("total")[-1]
+    + OV_stream.get_cumulative_activity("total")[-1]
+)
+
+measured_TBR = (T_produced / quantity_to_activity(T_consumed)).to(
+    ureg.particle * ureg.neutron**-1
+)
 
 optimised_ratio = 1.7e-2
 k_top = 8.9e-8 * ureg.m * ureg.s**-1
 k_wall = optimised_ratio * k_top
 
-# read irradiation times from general.json
-with open("../../data/general.json", "r") as f:
-    general_data = json.load(f)
-
-irradiations = []
-for generator in general_data["timestamps"]["generators"]:
-    irr_start_time = (
-        datetime.strptime(generator["on"], "%m/%d/%Y %H:%M") - start_time_as_datetime
-    )
-    irr_stop_time = (
-        datetime.strptime(generator["off"], "%m/%d/%Y %H:%M") - start_time_as_datetime
-    )
-    irr_start_time = irr_start_time.total_seconds() * ureg.second
-    irr_stop_time = irr_stop_time.total_seconds() * ureg.second
-    irradiations.append([irr_start_time, irr_stop_time])
-
-
-# calculated from Kevin's activation foil analysis from run 100 mL #7
-# TODO replace for values for this run
-P383_neutron_rate = 4.95e8 * ureg.neutron * ureg.s**-1
-A325_neutron_rate = 2.13e8 * ureg.neutron * ureg.s**-1
-
-neutron_rate_relative_uncertainty = 0.089
-neutron_rate = (
-    A325_neutron_rate
-) / 2  # the neutron rate is divided by two to acount for the double counting (two detectors)
 
 baby_model = Model(
     radius=baby_radius,
     height=baby_height,
-    TBR=calculated_TBR,
+    TBR=measured_TBR,
     neutron_rate=neutron_rate,
     irradiations=irradiations,
     k_top=k_top,
