@@ -1,5 +1,6 @@
 import openmc
 import vault
+from libra_toolbox.neutronics.neutron_source import A325_generator_diamond
 import helpers
 
 
@@ -278,9 +279,7 @@ def baby_model():
 
     settings = openmc.Settings()
 
-    point = openmc.stats.Point((x_c, y_c, z_c - 5.635))
-    src = openmc.IndependentSource(space=point)
-    src.energy = openmc.stats.Discrete([14.1e6], [1.0])
+    src = A325_generator_diamond((x_c, y_c, z_c - 5.635), (1, 1, 1))
     settings.source = src
     settings.batches = 100
     settings.inactive = 0
