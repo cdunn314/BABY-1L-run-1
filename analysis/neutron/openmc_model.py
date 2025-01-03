@@ -279,7 +279,7 @@ def baby_model():
 
     settings = openmc.Settings()
 
-    src = A325_generator_diamond((x_c, y_c, z_c - 5.635), (1, 1, 1))
+    src = A325_generator_diamond((x_c, y_c, z_c - 5.635), (1, 0, 0))
     settings.source = src
     settings.batches = 100
     settings.inactive = 0
