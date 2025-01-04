@@ -133,9 +133,13 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
         + cover
         + z_c
     )
+    z_plane_14 = openmc.ZPlane(z_c - 28.00)
+    z_plane_15 = openmc.ZPlane(z_c - 28.00 - epoxy_thickness)
 
     x_plane_1 = openmc.XPlane(x0=-13.5 + x_c)
     x_plane_2 = openmc.XPlane(x0=36.5 + x_c)
+    # x_plane_3 = openmc.XPlane(x0=-13.25 + x_c)
+    # x_plane_4 = openmc.XPlane(x0=36.25 + x_c)
 
     ######## Cylinder #################
     z_cyl_1 = openmc.ZCylinder(x0=x_c, y0=y_c, r=cllif_radius)
@@ -155,8 +159,30 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
     ######## Sphere #################
     sphere = openmc.Sphere(x0=x_c, y0=y_c, z0=z_c, r=50.00)  # before r=50.00
 
+    ######## RectangularParallelepiped #################
+    rectangular_1 = openmc.model.RectangularParallelepiped(
+        -13.5 - 4 + x_c, -13.5 + 4 + x_c, -8 + y_c, +8 + y_c, z_c - 28.00, z_c - 24.00
+    )
+    rectangular_2 = openmc.model.RectangularParallelepiped(
+        -9.5 + 1 + x_c, -9.5 + 1 + 8 + x_c, -8 + y_c, +8 + y_c, z_c - 28.00, z_c - 24.00
+    )
+    rectangular_3 = openmc.model.RectangularParallelepiped(
+        36.5 - 4 + x_c, 36.5 + 4 + x_c, -8 + y_c, +8 + y_c, z_c - 28.00, z_c - 24.00
+    )
+    rectangular_4 = openmc.model.RectangularParallelepiped(
+        36.5 - 4 - 1 - 8 + x_c,
+        36.5 - 4 - 1 + x_c,
+        -8 + y_c,
+        +8 + y_c,
+        z_c - 28.00,
+        z_c - 24.00,
+    )
+
     # regions
-    source_wall_region = +x_plane_1 & -x_plane_2 & +x_cyl_1 & -x_cyl_2
+    source_wall_region_1 = +x_plane_1 & -x_plane_2 & +x_cyl_1 & -x_cyl_2
+    # source_wall_region_2 = +x_plane_1 & -x_plane_3 & -x_cyl_2 & ~source_wall_region_1
+    # source_wall_region_3 = +x_plane_4 & -x_plane_2 & -x_cyl_2 & ~source_wall_region_1
+    # source_region = +x_plane_3 & -x_plane_4 & -x_cyl_1 & +sphere
     source_region = +x_plane_1 & -x_plane_2 & -x_cyl_1
     epoxy_region = +z_plane_1 & -z_plane_2 & -sphere
     alumina_compressed_region = +z_plane_2 & -z_plane_3 & -sphere
@@ -173,6 +199,11 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
     gap_region = +z_plane_8 & -z_plane_9 & -z_cyl_1 & +right_cyl
     firebrick_region = +z_plane_5 & -z_plane_11 & +z_cyl_3 & -z_cyl_4
     heater_region = -right_cyl
+    table_under_source_region = +z_plane_15 & -z_plane_14 & -sphere
+    lead_block_1_region = -rectangular_1
+    lead_block_2_region = -rectangular_2
+    lead_block_3_region = -rectangular_3
+    lead_block_4_region = -rectangular_4
     he_region = (
         +z_plane_5
         & -z_plane_12
@@ -186,10 +217,18 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
         & ~firebrick_region
         & ~vessel_region
         & ~cap_region
+        & ~heater_region
+        & ~table_under_source_region
+        & ~lead_block_1_region
+        & ~lead_block_2_region
+        & ~lead_block_3_region
+        & ~lead_block_4_region
     )
     sphere_region = (
         -sphere
-        & ~source_wall_region
+        & ~source_wall_region_1
+        # & ~source_wall_region_2
+        # & ~source_wall_region_3
         & ~source_region
         & ~epoxy_region
         & ~alumina_compressed_region
@@ -200,11 +239,21 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
         & ~he_region
         & ~vessel_region
         & ~cap_region
+        & ~heater_region
+        & ~table_under_source_region
+        & ~lead_block_1_region
+        & ~lead_block_2_region
+        & ~lead_block_3_region
+        & ~lead_block_4_region
     )
 
     # cells
-    source_wall_cell = openmc.Cell(region=source_wall_region)
-    source_wall_cell.fill = SS304
+    source_wall_cell_1 = openmc.Cell(region=source_wall_region_1)
+    source_wall_cell_1.fill = SS304
+    # source_wall_cell_2 = openmc.Cell(region=source_wall_region_2)
+    # source_wall_cell_2.fill = SS304
+    # source_wall_cell_3 = openmc.Cell(region=source_wall_region_3)
+    # source_wall_cell_3.fill = SS304
     source_region = openmc.Cell(region=source_region)
     source_region.fill = None
     epoxy_cell = openmc.Cell(region=epoxy_region)
@@ -225,13 +274,25 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
     firebrick_cell.fill = firebrick
     heater_cell = openmc.Cell(region=heater_region)
     heater_cell.fill = heater_mat
+    table_cell = openmc.Cell(region=table_under_source_region)
+    table_cell.fill = epoxy
     sphere_cell = openmc.Cell(region=sphere_region)
     sphere_cell.fill = air
     he_cell = openmc.Cell(region=he_region)
     he_cell.fill = he
+    lead_block_1_cell = openmc.Cell(region=lead_block_1_region)
+    lead_block_1_cell.fill = lead
+    lead_block_2_cell = openmc.Cell(region=lead_block_2_region)
+    lead_block_2_cell.fill = lead
+    lead_block_3_cell = openmc.Cell(region=lead_block_3_region)
+    lead_block_3_cell.fill = lead
+    lead_block_4_cell = openmc.Cell(region=lead_block_4_region)
+    lead_block_4_cell.fill = lead
 
     cells = [
-        source_wall_cell,
+        source_wall_cell_1,
+        # source_wall_cell_2,
+        # source_wall_cell_3,
         source_region,
         epoxy_cell,
         alumina_compressed_cell,
@@ -244,6 +305,11 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
         heater_cell,
         he_cell,
         sphere_cell,
+        table_cell,
+        lead_block_1_cell,
+        lead_block_2_cell,
+        lead_block_3_cell,
+        lead_block_4_cell,
     ]
 
     return sphere, cllif_cell, cells
@@ -263,6 +329,7 @@ def baby_model():
         heater_mat,
         firebrick,
         alumina,
+        lead,
         air,
         epoxy,
         he,
@@ -284,7 +351,7 @@ def baby_model():
     settings.batches = 100
     settings.inactive = 0
     settings.run_mode = "fixed source"
-    settings.particles = int(1e4)
+    settings.particles = int(1e3)
     settings.output = {"tallies": False}
     settings.photon_transport = False
 
@@ -413,6 +480,13 @@ he = openmc.Material(name="Helium")
 he.add_element("He", 1.0, "ao")
 he.set_density("g/cm3", density)
 
+lead = openmc.Material()
+lead.set_density("g/cm3", 11.34)
+lead.add_nuclide("Pb204", 0.014, "ao")
+lead.add_nuclide("Pb206", 0.241, "ao")
+lead.add_nuclide("Pb207", 0.221, "ao")
+lead.add_nuclide("Pb208", 0.524, "ao")
+
 
 if __name__ == "__main__":
-    baby_model().run()
+    baby_model().run(geometry_debug=True)
