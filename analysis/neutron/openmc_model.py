@@ -351,7 +351,7 @@ def baby_model():
     settings.batches = 100
     settings.inactive = 0
     settings.run_mode = "fixed source"
-    settings.particles = int(1e3)
+    settings.particles = int(1e4)
     settings.output = {"tallies": False}
     settings.photon_transport = False
 
@@ -489,4 +489,4 @@ lead.add_nuclide("Pb208", 0.524, "ao")
 
 
 if __name__ == "__main__":
-    baby_model().run(geometry_debug=True)
+    baby_model().run()
