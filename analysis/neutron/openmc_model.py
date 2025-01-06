@@ -138,8 +138,6 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
 
     x_plane_1 = openmc.XPlane(x0=-13.5 + x_c)
     x_plane_2 = openmc.XPlane(x0=36.5 + x_c)
-    # x_plane_3 = openmc.XPlane(x0=-13.25 + x_c)
-    # x_plane_4 = openmc.XPlane(x0=36.25 + x_c)
 
     ######## Cylinder #################
     z_cyl_1 = openmc.ZCylinder(x0=x_c, y0=y_c, r=cllif_radius)
@@ -161,28 +159,20 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
 
     ######## RectangularParallelepiped #################
     rectangular_1 = openmc.model.RectangularParallelepiped(
-        -13.5 - 4 + x_c, -13.5 + 4 + x_c, -8 + y_c, +8 + y_c, z_c - 28.00, z_c - 24.00
+        -17.5 + x_c, -9.5 + x_c, -8 + y_c, +8 + y_c, z_c - 28.00, z_c - 24.00
     )
     rectangular_2 = openmc.model.RectangularParallelepiped(
-        -9.5 + 1 + x_c, -9.5 + 1 + 8 + x_c, -8 + y_c, +8 + y_c, z_c - 28.00, z_c - 24.00
+        -8.5 + x_c, -0.5 + x_c, -8 + y_c, +8 + y_c, z_c - 28.00, z_c - 24.00
     )
     rectangular_3 = openmc.model.RectangularParallelepiped(
-        36.5 - 4 + x_c, 36.5 + 4 + x_c, -8 + y_c, +8 + y_c, z_c - 28.00, z_c - 24.00
+        32.5 + x_c, 40.5 + x_c, -8 + y_c, +8 + y_c, z_c - 28.00, z_c - 24.00
     )
     rectangular_4 = openmc.model.RectangularParallelepiped(
-        36.5 - 4 - 1 - 8 + x_c,
-        36.5 - 4 - 1 + x_c,
-        -8 + y_c,
-        +8 + y_c,
-        z_c - 28.00,
-        z_c - 24.00,
+        23.5 + x_c, 31.5 + x_c, -8 + y_c, +8 + y_c, z_c - 28.00, z_c - 24.00
     )
 
     # regions
     source_wall_region_1 = +x_plane_1 & -x_plane_2 & +x_cyl_1 & -x_cyl_2
-    # source_wall_region_2 = +x_plane_1 & -x_plane_3 & -x_cyl_2 & ~source_wall_region_1
-    # source_wall_region_3 = +x_plane_4 & -x_plane_2 & -x_cyl_2 & ~source_wall_region_1
-    # source_region = +x_plane_3 & -x_plane_4 & -x_cyl_1 & +sphere
     source_region = +x_plane_1 & -x_plane_2 & -x_cyl_1
     epoxy_region = +z_plane_1 & -z_plane_2 & -sphere
     alumina_compressed_region = +z_plane_2 & -z_plane_3 & -sphere
@@ -227,8 +217,6 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
     sphere_region = (
         -sphere
         & ~source_wall_region_1
-        # & ~source_wall_region_2
-        # & ~source_wall_region_3
         & ~source_region
         & ~epoxy_region
         & ~alumina_compressed_region
@@ -250,10 +238,6 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
     # cells
     source_wall_cell_1 = openmc.Cell(region=source_wall_region_1)
     source_wall_cell_1.fill = SS304
-    # source_wall_cell_2 = openmc.Cell(region=source_wall_region_2)
-    # source_wall_cell_2.fill = SS304
-    # source_wall_cell_3 = openmc.Cell(region=source_wall_region_3)
-    # source_wall_cell_3.fill = SS304
     source_region = openmc.Cell(region=source_region)
     source_region.fill = None
     epoxy_cell = openmc.Cell(region=epoxy_region)
@@ -291,8 +275,6 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
 
     cells = [
         source_wall_cell_1,
-        # source_wall_cell_2,
-        # source_wall_cell_3,
         source_region,
         epoxy_cell,
         alumina_compressed_cell,
