@@ -29,6 +29,8 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
     firebrick_thickness = 15.24
     high = 21.093
     cover = 2.392
+    z_tab = 28.00
+    lead_height = 4.00
 
     heater_r = 0.439
     heater_h = 25.40
@@ -133,11 +135,24 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
         + cover
         + z_c
     )
-    z_plane_14 = openmc.ZPlane(z_c - 28.00)
-    z_plane_15 = openmc.ZPlane(z_c - 28.00 - epoxy_thickness)
+    z_plane_14 = openmc.ZPlane(z_c - z_tab)
+    z_plane_15 = openmc.ZPlane(z_c - z_tab - epoxy_thickness)
 
-    x_plane_1 = openmc.XPlane(x0=-13.5 + x_c)
-    x_plane_2 = openmc.XPlane(x0=36.5 + x_c)
+    x_plane_1 = openmc.XPlane(x0=-13.50 + x_c)
+    x_plane_2 = openmc.XPlane(x0=36.50 + x_c)
+
+    source_h = 50.00
+    source_x = x_c - 13.50
+    source_z = z_c - 5.635
+    source_external_r = 5.00
+    source_internal_r = 4.75
+
+    ext_cyl_source = openmc.model.RightCircularCylinder(
+        (source_x, y_c, source_z), source_h, source_external_r, axis="x"
+    )
+    source_region = openmc.model.RightCircularCylinder(
+        (source_x + 0.25, y_c, source_z), source_h - 0.50, source_internal_r, axis="x"
+    )
 
     ######## Cylinder #################
     z_cyl_1 = openmc.ZCylinder(x0=x_c, y0=y_c, r=cllif_radius)
@@ -157,23 +172,45 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
     ######## Sphere #################
     sphere = openmc.Sphere(x0=x_c, y0=y_c, z0=z_c, r=50.00)  # before r=50.00
 
-    ######## RectangularParallelepiped #################
-    rectangular_1 = openmc.model.RectangularParallelepiped(
-        -17.5 + x_c, -9.5 + x_c, -8 + y_c, +8 + y_c, z_c - 28.00, z_c - 24.00
+    ######## Lead bricks positioned under the source #################
+    lead_block_1_region = openmc.model.RectangularParallelepiped(
+        x_c - 17.50,
+        x_c - 9.50,
+        y_c - 8.00,
+        y_c + 8.00,
+        z_c - z_tab,
+        z_c - z_tab + lead_height,
     )
-    rectangular_2 = openmc.model.RectangularParallelepiped(
-        -8.5 + x_c, -0.5 + x_c, -8 + y_c, +8 + y_c, z_c - 28.00, z_c - 24.00
+    lead_block_2_region = openmc.model.RectangularParallelepiped(
+        x_c - 8.50,
+        x_c - 0.50,
+        y_c - 8.00,
+        y_c + 8.00,
+        z_c - z_tab,
+        z_c - z_tab + lead_height,
     )
-    rectangular_3 = openmc.model.RectangularParallelepiped(
-        32.5 + x_c, 40.5 + x_c, -8 + y_c, +8 + y_c, z_c - 28.00, z_c - 24.00
+    lead_block_3_region = openmc.model.RectangularParallelepiped(
+        x_c + 32.50,
+        x_c + 40.50,
+        y_c - 8.00,
+        y_c + 8.00,
+        z_c - z_tab,
+        z_c - z_tab + lead_height,
     )
-    rectangular_4 = openmc.model.RectangularParallelepiped(
-        23.5 + x_c, 31.5 + x_c, -8 + y_c, +8 + y_c, z_c - 28.00, z_c - 24.00
+    lead_block_4_region = openmc.model.RectangularParallelepiped(
+        x_c + 23.50,
+        x_c + 31.50,
+        y_c - 8.00,
+        y_c + 8.00,
+        z_c - z_tab,
+        z_c - z_tab + lead_height,
     )
 
     # regions
-    source_wall_region_1 = +x_plane_1 & -x_plane_2 & +x_cyl_1 & -x_cyl_2
-    source_region = +x_plane_1 & -x_plane_2 & -x_cyl_1
+    # source_wall_region_1 = +x_plane_1 & -x_plane_2 & +x_cyl_1 & -x_cyl_2
+    # source_region = +x_plane_1 & -x_plane_2 & -x_cyl_1
+    source_wall_region_1 = -ext_cyl_source & +source_region
+    source_region = -source_region
     epoxy_region = +z_plane_1 & -z_plane_2 & -sphere
     alumina_compressed_region = +z_plane_2 & -z_plane_3 & -sphere
     bottom_vessel = +z_plane_3 & -z_plane_4 & -z_cyl_6
@@ -190,10 +227,10 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
     firebrick_region = +z_plane_5 & -z_plane_11 & +z_cyl_3 & -z_cyl_4
     heater_region = -right_cyl
     table_under_source_region = +z_plane_15 & -z_plane_14 & -sphere
-    lead_block_1_region = -rectangular_1
-    lead_block_2_region = -rectangular_2
-    lead_block_3_region = -rectangular_3
-    lead_block_4_region = -rectangular_4
+    lead_block_1_region = -lead_block_1_region
+    lead_block_2_region = -lead_block_2_region
+    lead_block_3_region = -lead_block_3_region
+    lead_block_4_region = -lead_block_4_region
     he_region = (
         +z_plane_5
         & -z_plane_12
@@ -462,6 +499,8 @@ he = openmc.Material(name="Helium")
 he.add_element("He", 1.0, "ao")
 he.set_density("g/cm3", density)
 
+# lead
+# data from https://wwwrcamnl.wr.usgs.gov/isoig/period/pb_iig.html
 lead = openmc.Material()
 lead.set_density("g/cm3", 11.34)
 lead.add_nuclide("Pb204", 0.014, "ao")
@@ -471,4 +510,4 @@ lead.add_nuclide("Pb208", 0.524, "ao")
 
 
 if __name__ == "__main__":
-    baby_model().run()
+    baby_model().run(geometry_debug=False)
