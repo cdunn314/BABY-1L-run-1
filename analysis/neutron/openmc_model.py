@@ -52,6 +52,12 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
     vessel_radius = 12.853
     external_radius = 13.272
 
+    source_h = 50.00
+    source_x = x_c - 13.50
+    source_z = z_c - 5.635
+    source_external_r = 5.00
+    source_internal_r = 4.75
+
     ######## Surfaces #################
     z_plane_1 = openmc.ZPlane(0.0 + z_c)
     z_plane_2 = openmc.ZPlane(epoxy_thickness + z_c)
@@ -138,22 +144,6 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
     z_plane_14 = openmc.ZPlane(z_c - z_tab)
     z_plane_15 = openmc.ZPlane(z_c - z_tab - epoxy_thickness)
 
-    x_plane_1 = openmc.XPlane(x0=-13.50 + x_c)
-    x_plane_2 = openmc.XPlane(x0=36.50 + x_c)
-
-    source_h = 50.00
-    source_x = x_c - 13.50
-    source_z = z_c - 5.635
-    source_external_r = 5.00
-    source_internal_r = 4.75
-
-    ext_cyl_source = openmc.model.RightCircularCylinder(
-        (source_x, y_c, source_z), source_h, source_external_r, axis="x"
-    )
-    source_region = openmc.model.RightCircularCylinder(
-        (source_x + 0.25, y_c, source_z), source_h - 0.50, source_internal_r, axis="x"
-    )
-
     ######## Cylinder #################
     z_cyl_1 = openmc.ZCylinder(x0=x_c, y0=y_c, r=cllif_radius)
     z_cyl_2 = openmc.ZCylinder(x0=x_c, y0=y_c, r=inconel_radius)
@@ -162,11 +152,14 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
     z_cyl_5 = openmc.ZCylinder(x0=x_c, y0=y_c, r=vessel_radius)
     z_cyl_6 = openmc.ZCylinder(x0=x_c, y0=y_c, r=external_radius)
 
-    x_cyl_1 = openmc.XCylinder(y0=y_c, z0=-5.635 + z_c, r=4.75)
-    x_cyl_2 = openmc.XCylinder(y0=y_c, z0=-5.635 + z_c, r=5.00)
-
     right_cyl = openmc.model.RightCircularCylinder(
         (x_c, y_c, heater_z), heater_h, heater_r, axis="z"
+    )
+    ext_cyl_source = openmc.model.RightCircularCylinder(
+        (source_x, y_c, source_z), source_h, source_external_r, axis="x"
+    )
+    source_region = openmc.model.RightCircularCylinder(
+        (source_x + 0.25, y_c, source_z), source_h - 0.50, source_internal_r, axis="x"
     )
 
     ######## Sphere #################
@@ -207,9 +200,7 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
     )
 
     # regions
-    # source_wall_region_1 = +x_plane_1 & -x_plane_2 & +x_cyl_1 & -x_cyl_2
-    # source_region = +x_plane_1 & -x_plane_2 & -x_cyl_1
-    source_wall_region_1 = -ext_cyl_source & +source_region
+    source_wall_region = -ext_cyl_source & +source_region
     source_region = -source_region
     epoxy_region = +z_plane_1 & -z_plane_2 & -sphere
     alumina_compressed_region = +z_plane_2 & -z_plane_3 & -sphere
@@ -253,7 +244,7 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
     )
     sphere_region = (
         -sphere
-        & ~source_wall_region_1
+        & ~source_wall_region
         & ~source_region
         & ~epoxy_region
         & ~alumina_compressed_region
@@ -273,7 +264,7 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
     )
 
     # cells
-    source_wall_cell_1 = openmc.Cell(region=source_wall_region_1)
+    source_wall_cell_1 = openmc.Cell(region=source_wall_region)
     source_wall_cell_1.fill = SS304
     source_region = openmc.Cell(region=source_region)
     source_region.fill = None
