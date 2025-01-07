@@ -31,7 +31,8 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
     cover = 2.392
     z_tab = 28.00
     lead_height = 4.00
-
+    lead_width = 8.00
+    lead_length = 16.00
     heater_r = 0.439
     heater_h = 25.40
     heater_z = (
@@ -166,38 +167,57 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
     sphere = openmc.Sphere(x0=x_c, y0=y_c, z0=z_c, r=50.00)  # before r=50.00
 
     ######## Lead bricks positioned under the source #################
-    lead_block_1_region = openmc.model.RectangularParallelepiped(
-        x_c - 17.50,
-        x_c - 9.50,
-        y_c - 8.00,
-        y_c + 8.00,
-        z_c - z_tab,
-        z_c - z_tab + lead_height,
-    )
-    lead_block_2_region = openmc.model.RectangularParallelepiped(
-        x_c - 8.50,
-        x_c - 0.50,
-        y_c - 8.00,
-        y_c + 8.00,
-        z_c - z_tab,
-        z_c - z_tab + lead_height,
-    )
-    lead_block_3_region = openmc.model.RectangularParallelepiped(
-        x_c + 32.50,
-        x_c + 40.50,
-        y_c - 8.00,
-        y_c + 8.00,
-        z_c - z_tab,
-        z_c - z_tab + lead_height,
-    )
-    lead_block_4_region = openmc.model.RectangularParallelepiped(
-        x_c + 23.50,
-        x_c + 31.50,
-        y_c - 8.00,
-        y_c + 8.00,
-        z_c - z_tab,
-        z_c - z_tab + lead_height,
-    )
+    positions = [
+        (x_c - 13.50, y_c, z_c - z_tab),
+        (x_c - 4.50, y_c, z_c - z_tab),
+        (x_c + 36.50, y_c, z_c - z_tab),
+        (x_c + 27.50, y_c, z_c - z_tab),
+    ]
+
+    lead_blocks = []
+    for position in positions:
+        lead_block_region = openmc.model.RectangularParallelepiped(
+            position[0] - lead_width / 2,
+            position[0] + lead_width / 2,
+            position[1] - lead_length / 2,
+            position[1] + lead_length / 2,
+            position[2],
+            position[2] + lead_height,
+        )
+        lead_blocks.append(lead_block_region)
+
+    # lead_block_1_region = openmc.model.RectangularParallelepiped(
+    #     x_c - 17.50,
+    #     x_c - 9.50,
+    #     y_c - 8.00,
+    #     y_c + 8.00,
+    #     z_c - z_tab,
+    #     z_c - z_tab + lead_height,
+    # )
+    # lead_block_2_region = openmc.model.RectangularParallelepiped(
+    #     x_c - 8.50,
+    #     x_c - 0.50,
+    #     y_c - 8.00,
+    #     y_c + 8.00,
+    #     z_c - z_tab,
+    #     z_c - z_tab + lead_height,
+    # )
+    # lead_block_3_region = openmc.model.RectangularParallelepiped(
+    #     x_c + 32.50,
+    #     x_c + 40.50,
+    #     y_c - 8.00,
+    #     y_c + 8.00,
+    #     z_c - z_tab,
+    #     z_c - z_tab + lead_height,
+    # )
+    # lead_block_4_region = openmc.model.RectangularParallelepiped(
+    #     x_c + 23.50,
+    #     x_c + 31.50,
+    #     y_c - 8.00,
+    #     y_c + 8.00,
+    #     z_c - z_tab,
+    #     z_c - z_tab + lead_height,
+    # )
 
     # regions
     source_wall_region = -ext_cyl_source & +source_region
@@ -218,10 +238,14 @@ def baby_geometry(x_c: float, y_c: float, z_c: float):
     firebrick_region = +z_plane_5 & -z_plane_11 & +z_cyl_3 & -z_cyl_4
     heater_region = -right_cyl
     table_under_source_region = +z_plane_15 & -z_plane_14 & -sphere
-    lead_block_1_region = -lead_block_1_region
-    lead_block_2_region = -lead_block_2_region
-    lead_block_3_region = -lead_block_3_region
-    lead_block_4_region = -lead_block_4_region
+    # lead_block_1_region = -lead_block_1_region
+    # lead_block_2_region = -lead_block_2_region
+    # lead_block_3_region = -lead_block_3_region
+    # lead_block_4_region = -lead_block_4_region
+    lead_block_1_region = -lead_blocks[0]
+    lead_block_2_region = -lead_blocks[1]
+    lead_block_3_region = -lead_blocks[2]
+    lead_block_4_region = -lead_blocks[3]
     he_region = (
         +z_plane_5
         & -z_plane_12
