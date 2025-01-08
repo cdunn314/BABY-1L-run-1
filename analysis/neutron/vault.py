@@ -462,6 +462,10 @@ def build_vault_model(
         & ~DANTE_vault_mag_stand_reg
         & ~Region_28
     )
+
+    if overall_exclusion_region:
+        Region_1000 = Region_1000 & ~overall_exclusion_region
+
     Cell_1000 = openmc.Cell(fill=Air, region=Region_1000)
 
     Cells = [
