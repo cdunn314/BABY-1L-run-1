@@ -26,11 +26,11 @@ conda env create -f environment.yml
 - [x] [Link to Zenodo](https://zenodo.org/)
 - [x] Add Zenodo badge with DOI
 - [ ] Add general run data to [`data/general.json`](data/general.json)
-- [ ] Add LSC data to [`data/tritium_detection`](data/tritium_detection)
+- [x] Add LSC data to [`data/tritium_detection`](data/tritium_detection)
 - [ ] Add neutron detection data to [`data/neutron_detection`](data/neutron_detection)
-- [ ] Add OpenMC model to [`analysis/neutron`](analysis/neutron)
-- [ ] Add Tritium model to [`analysis/tritium`](analysis/tritium)
+- [x] Add OpenMC model to [`analysis/neutron`](analysis/neutron)
+- [x] Add Tritium model to [`analysis/tritium`](analysis/tritium)
 - [ ] Add the right version tags to [`environment.yml`](environment.yml)
 - [ ] Add information to the README (info about the run)
 - [x] Add [binder](https://mybinder.org/) badge
-- [ ] Update [CI workflows](.github/workflows)
+- [x] Update [CI workflows](.github/workflows)
