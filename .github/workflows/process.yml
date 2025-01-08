@@ -22,7 +22,7 @@ jobs:
         with:
           auto-update-conda: true
           environment-file: environment.yml
-          activate-environment: baby_1l_run_2
+          activate-environment: baby_1l_run_1
 
       - name: Run neutronics model
         shell: bash -l {0}
