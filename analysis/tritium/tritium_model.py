@@ -2,12 +2,13 @@ from libra_toolbox.tritium.model import ureg, Model, quantity_to_activity
 import numpy as np
 import json
 from libra_toolbox.tritium.lsc_measurements import (
-    LSCFileReader,
-    LIBRASample,
     LIBRARun,
-    LSCSample,
+    LSCFileReader,
     GasStream,
+    LSCSample,
+    LIBRASample,
 )
+
 from datetime import datetime
 
 
@@ -424,13 +425,14 @@ sample_6_OV = LIBRASample(
 # Make streams
 
 # read start time from general.json
-
 all_start_times = []
-for generator in general_data["timestamps"]["generators"]:
-    start_time = datetime.strptime(generator["on"], "%m/%d/%Y %H:%M")
-    all_start_times.append(start_time)
-start_time_as_datetime = min(all_start_times)
-start_time = start_time_as_datetime.strftime("%m/%d/%Y %H:%M %p")
+for generator in general_data["generators"]:
+    if generator["enabled"] is False:
+        continue
+    for irradiation_period in generator["periods"]:
+        start_time = datetime.strptime(irradiation_period["start"], "%m/%d/%Y %H:%M")
+        all_start_times.append(start_time)
+start_time = min(all_start_times)
 
 IV_stream = GasStream(
     [
@@ -450,6 +452,11 @@ OV_stream = GasStream(
     [sample_1_OV, sample_2_OV, sample_3_OV, sample_4_OV, sample_5_OV, sample_6_OV],
     start_time=start_time,
 )
+
+gas_streams = {
+    "IV": IV_stream,
+    "OV": OV_stream,
+}
 
 # substract background
 for sample in [sample_1_IV, sample_2_IV]:
@@ -498,16 +505,20 @@ baby_height = baby_volume / baby_cross_section
 # read irradiation times from general.json
 
 irradiations = []
-for generator in general_data["timestamps"]["generators"]:
-    irr_start_time = (
-        datetime.strptime(generator["on"], "%m/%d/%Y %H:%M") - start_time_as_datetime
-    )
-    irr_stop_time = (
-        datetime.strptime(generator["off"], "%m/%d/%Y %H:%M") - start_time_as_datetime
-    )
-    irr_start_time = irr_start_time.total_seconds() * ureg.second
-    irr_stop_time = irr_stop_time.total_seconds() * ureg.second
-    irradiations.append([irr_start_time, irr_stop_time])
+for generator in general_data["generators"]:
+    if generator["enabled"] is False:
+        continue
+    for irradiation_period in generator["periods"]:
+        irr_start_time = (
+            datetime.strptime(irradiation_period["start"], "%m/%d/%Y %H:%M")
+            - start_time
+        )
+        irr_stop_time = (
+            datetime.strptime(irradiation_period["end"], "%m/%d/%Y %H:%M") - start_time
+        )
+        irr_start_time = irr_start_time.total_seconds() * ureg.second
+        irr_stop_time = irr_stop_time.total_seconds() * ureg.second
+        irradiations.append([irr_start_time, irr_stop_time])
 
 # Neutron rate
 # calculated from Kevin's activation foil analysis from run 100 mL #7
@@ -544,9 +555,8 @@ calculated_TBR_std_dev = (
 total_irradiation_time = sum([irr[1] - irr[0] for irr in irradiations])
 
 T_consumed = neutron_rate * total_irradiation_time
-T_produced = (
-    IV_stream.get_cumulative_activity("total")[-1]
-    + OV_stream.get_cumulative_activity("total")[-1]
+T_produced = sum(
+    [stream.get_cumulative_activity("total")[-1] for stream in run.streams]
 )
 
 measured_TBR = (T_produced / quantity_to_activity(T_consumed)).to(
@@ -567,3 +577,85 @@ baby_model = Model(
     k_top=k_top,
     k_wall=k_wall,
 )
+
+
+# store processed data
+processed_data = {
+    "modelled_baby_radius": {
+        "value": baby_radius.magnitude,
+        "unit": str(baby_radius.units),
+    },
+    "modelled_baby_height": {
+        "value": baby_height.magnitude,
+        "unit": str(baby_height.units),
+    },
+    "irradiations": [
+        {
+            "start_time": {
+                "value": irr[0].magnitude,
+                "unit": str(irr[0].units),
+            },
+            "stop_time": {
+                "value": irr[1].magnitude,
+                "unit": str(irr[1].units),
+            },
+        }
+        for irr in irradiations
+    ],
+    "neutron_rate_used_in_model": {
+        "value": baby_model.neutron_rate.magnitude,
+        "unit": str(baby_model.neutron_rate.units),
+    },
+    "measured_TBR": {
+        "value": measured_TBR.magnitude,
+        "unit": str(measured_TBR.units),
+    },
+    "TBR_used_in_model": {
+        "value": baby_model.TBR.magnitude,
+        "unit": str(baby_model.TBR.units),
+    },
+    "k_top": {
+        "value": baby_model.k_top.magnitude,
+        "unit": str(baby_model.k_top.units),
+    },
+    "k_wall": {
+        "value": baby_model.k_wall.magnitude,
+        "unit": str(baby_model.k_wall.units),
+    },
+    "cumulative_tritium_release": {
+        label: {
+            **{
+                form: {
+                    "value": gas_stream.get_cumulative_activity(
+                        form
+                    ).magnitude.tolist(),
+                    "unit": str(gas_stream.get_cumulative_activity(form).units),
+                }
+                for form in ["total", "soluble", "insoluble"]
+            },
+            "sampling_times": {
+                "value": gas_stream.relative_times_as_pint.magnitude.tolist(),
+                "unit": str(gas_stream.relative_times_as_pint.units),
+            },
+        }
+        for label, gas_stream in gas_streams.items()
+    },
+}
+
+# check if the file exists and load it
+
+processed_data_file = "../../data/processed_data.json"
+
+try:
+    with open(processed_data_file, "r") as f:
+        existing_data = json.load(f)
+except FileNotFoundError:
+    print(f"Processed data file not found, creating it in {processed_data_file}")
+    existing_data = {}
+
+existing_data.update(processed_data)
+
+with open(processed_data_file, "w") as f:
+    json.dump(existing_data, f, indent=4)
+
+print(f"Processed data stored in {processed_data_file}")
