@@ -521,15 +521,10 @@ for generator in general_data["generators"]:
         irradiations.append([irr_start_time, irr_stop_time])
 
 # Neutron rate
-# calculated from Kevin's activation foil analysis from run 100 mL #7
-# TODO replace for values for this run
-P383_neutron_rate = 4.95e8 * ureg.neutron * ureg.s**-1
-A325_neutron_rate = 2.13e8 * ureg.neutron * ureg.s**-1
-
+# taking from https://github.com/LIBRA-project/libra-toolbox/pull/47/files#diff-6d8628c84de8f0814868feb8a67e92d36d4abea51105d48f46df380d7cda4d5a
+# TODO replace by robust method once https://github.com/LIBRA-project/libra-toolbox/pull/47 is merged
 neutron_rate_relative_uncertainty = 0.089
-neutron_rate = (
-    A325_neutron_rate
-) / 2  # the neutron rate is divided by two to acount for the double counting (two detectors)
+neutron_rate = np.mean([9.426e7, 8.002e7, 1.001e8]) * ureg.neutron * ureg.s**-1
 
 # TBR from OpenMC
 
@@ -605,6 +600,11 @@ processed_data = {
     "neutron_rate_used_in_model": {
         "value": baby_model.neutron_rate.magnitude,
         "unit": str(baby_model.neutron_rate.units),
+    },
+    # TODO remove this and have it done by the neutron analysis once https://github.com/LIBRA-project/libra-toolbox/pull/47 is merged
+    "measured_neutron_rate": {
+        "value": neutron_rate.magnitude,
+        "unit": str(neutron_rate.units),
     },
     "measured_TBR": {
         "value": measured_TBR.magnitude,
