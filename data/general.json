@@ -94,8 +94,12 @@
                 {
                     "position": "A 325 - top",
                     "material": "Nb",
-                    "designator": "Nb1"
+                    "designator": "Nb1",
                     "number_of_foils": 1,
+                    "distance_from_source": {
+                        "value": 5.1,
+                        "unit": "cm"
+                    },
                     "mass": {
                         "value": 0.2733,
                         "unit": "g"
@@ -112,8 +116,12 @@
                 {
                     "position": "A 325 - bottom",
                     "material": "Zr",
-                    "designator": "Zr Packet #1"
+                    "designator": "Zr Packet #1",
                     "number_of_foils": 8,
+                    "distance_from_source": {
+                        "value": 5.1,
+                        "unit": "cm"
+                    },
                     "mass": {
                         "value": 0.9036,
                         "unit": "g"
