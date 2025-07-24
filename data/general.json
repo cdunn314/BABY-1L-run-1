@@ -98,7 +98,7 @@
                     "material": "Nb",
                     "designator": "Nb1",
                     "number_of_foils": 1,
-                    "distance_from_source": {
+                    "distance_to_source": {
                         "value": 5.1,
                         "unit": "cm"
                     },
@@ -123,7 +123,7 @@
                     "material": "Zr",
                     "designator": "Zr Packet #1",
                     "number_of_foils": 8,
-                    "distance_from_source": {
+                    "distance_to_source": {
                         "value": 5.1,
                         "unit": "cm"
                     },
@@ -161,36 +161,6 @@
                         "unit": null
                     }
                 },
-                "Co60 Count 2": {
-                    "directory": "Co60_1_0uCi_Feb2006_20241121/UNFILTERED",
-                    "nuclide": "Co60",
-                    "activity": {
-                        "value": 1.0,
-                        "unit": "uCi",
-                        "date": "2006-02-14"
-                    },
-                    "energies": null,
-                    "intensities": null,
-                    "half_life": {
-                        "value": null,
-                        "unit": null
-                    }
-                },
-                "Co60 Count 3": {
-                    "directory": "Co60_1_0uCi_Jan2006_20241121/UNFILTERED",
-                    "nuclide": "Co60",
-                    "activity": {
-                        "value": 1.0,
-                        "unit": "uCi",
-                        "date": "2006-01-15"
-                    },
-                    "energies": null,
-                    "intensities": null,
-                    "half_life": {
-                        "value": null,
-                        "unit": null
-                    }
-                },
                 "Cs137 Count 1": {
                     "directory": "Cs137_4_66uCi_19Mar2014_20241107/UNFILTERED",
                     "nuclide": "Cs137",
@@ -206,36 +176,6 @@
                         "unit": null
                     }
                 },
-                "Cs137 Count 2": {
-                    "directory": "Cs137_5_0uCi_Jan2006_20241121/UNFILTERED",
-                    "nuclide": "Cs137",
-                    "activity": {
-                        "value": 5.0,
-                        "unit": "uCi",
-                        "date": "2006-01-15"
-                    },
-                    "energies": null,
-                    "intensities": null,
-                    "half_life": {
-                        "value": null,
-                        "unit": null
-                    }
-                },
-                "Cs137 Count 3": {
-                    "directory": "Cs137_9_38uCi_29Sep2023_20241121/UNFILTERED",
-                    "nuclide": "Cs137",
-                    "activity": {
-                        "value": 9.38,
-                        "unit": "uCi",
-                        "date": "2023-09-29"
-                    },
-                    "energies": null,
-                    "intensities": null,
-                    "half_life": {
-                        "value": null,
-                        "unit": null
-                    }
-                },
                 "Mn54 Count 1": {
                     "directory": "Mn54_6_27uCi_2May2016_20241107/UNFILTERED",
                     "nuclide": "Mn54",
@@ -243,51 +183,6 @@
                         "value": 6.27,
                         "unit": "uCi",
                         "date": "2016-05-02"
-                    },
-                    "energies": null,
-                    "intensities": null,
-                    "half_life": {
-                        "value": null,
-                        "unit": null
-                    }
-                },
-                "Na22 Count 1": {
-                    "directory": "Na22_5uCi_Mar2014_20241107/UNFILTERED",
-                    "nuclide": "Na22",
-                    "activity": {
-                        "value": 5.0,
-                        "unit": "uCi",
-                        "date": "2014-03-15"
-                    },
-                    "energies": null,
-                    "intensities": null,
-                    "half_life": {
-                        "value": null,
-                        "unit": null
-                    }
-                },
-                "Na22 Count 2": {
-                    "directory": "Na22_7_33uCi_2May2016_20241121/UNFILTERED",
-                    "nuclide": "Na22",
-                    "activity": {
-                        "value": 7.33,
-                        "unit": "uCi",
-                        "date": "2016-05-02"
-                    },
-                    "energies": null,
-                    "intensities": null,
-                    "half_life": {
-                        "value": null,
-                        "unit": null
-                    }
-                },
-                "Na22 Count 3": {
-                    "directory": "Na22_9_98uCi_29Sep2023_20241121/UNFILTERED",
-                    "nuclide": "Na22",
-                    "activity": {
-                        "value": 9.98,
-                        "unit": "uCi",
-                        "date": "2023-09-29"
                     },
                     "energies": null,
                     "intensities": null,
